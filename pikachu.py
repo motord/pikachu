@@ -2,7 +2,11 @@
 __author__ = 'peter'
 
 import pika
+import logging
 
+LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
+              '-35s %(lineno) -5d: %(message)s')
+LOGGER = logging.getLogger(__name__)
 
 class Pikachu(object):
     
@@ -37,7 +41,19 @@ class Pikachu(object):
     # Step #5
     def handle_delivery(self, channel, method, header, body):
         """Called when we receive a message from RabbitMQ"""
-        pass
+        LOGGER.info('Received message # %s from %s: %s',
+                    method.delivery_tag, header.app_id, body)
+        self.acknowledge_message(method.delivery_tag)
+
+    def acknowledge_message(self, delivery_tag):
+        """Acknowledge the message delivery from RabbitMQ by sending a
+        Basic.Ack RPC method for the delivery tag.
+
+        :param int delivery_tag: The delivery tag from the Basic.Deliver frame
+
+        """
+        LOGGER.info('Acknowledging message %s', delivery_tag)
+        self._channel.basic_ack(delivery_tag)
 
     def start(self):
         # Loop so we can communicate with RabbitMQ

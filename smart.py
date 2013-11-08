@@ -7,7 +7,7 @@ from config import SMART
 import stupid
 import json
 
-from minions import order_complete, order_courier, user_register
+import minions
 
 
 class Smart(Pikachu):
@@ -40,7 +40,7 @@ class Smart(Pikachu):
                                             routing_key='pikachu.stupid',
                                             body=body,
                                             properties=properties)
-
+        Pikachu.handle_delivery(self, channel, method, header, body)
 
 smart=Smart()
 

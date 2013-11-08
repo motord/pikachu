@@ -20,6 +20,7 @@ class Stupid(Pikachu):
         """Called when we receive a message from RabbitMQ"""
         data=json.loads(body)
         self.send(data['mobile'], data['message'])
+        Pikachu.handle_delivery(self, channel, method, header, body)
 
     def send(self, mobile, message):
         self._client.service.sendBatchMessage(OUTBOX['account'], OUTBOX['password'], mobile, message)

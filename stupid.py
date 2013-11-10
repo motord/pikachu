@@ -7,7 +7,7 @@ from config import STUPID, OUTBOX, DATABASE
 import logging
 import json
 
-from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Sequence
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.engine.url import URL
 from datetime import datetime
@@ -32,7 +32,7 @@ class Message(DeclarativeBase):
     __tablename__ = "messages"
     __table_args__ = {'schema':DATABASE['username']}
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, Sequence('messages_id_seq'), primary_key=True)
     recipients = Column(ARRAY(String))
     headcount = Column(Integer)
     content = Column(String, nullable=True)

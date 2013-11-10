@@ -34,13 +34,17 @@ class Smart(Pikachu):
     # Step #5
     def handle_delivery(self, channel, method, header, body):
         """Called when we receive a message from RabbitMQ"""
-        # data=json.loads(body)
-        properties = pika.BasicProperties(content_type='application/json')
-        self._forward_channel.basic_publish(exchange=self._intelligence['forward_exchange'],
-                                            routing_key='pikachu.stupid',
-                                            body=body,
-                                            properties=properties)
-        Pikachu.handle_delivery(self, channel, method, header, body)
+        try:
+            data=json.loads(body)
+            properties = pika.BasicProperties(content_type='application/json')
+            body=json.dumps(minions.process(method, header, body))
+            self._forward_channel.basic_publish(exchange=self._intelligence['forward_exchange'],
+                                                routing_key='pikachu.stupid',
+                                                body=body,
+                                                properties=properties)
+            Pikachu.handle_delivery(self, channel, method, header, body)
+        except ValueError:
+            pass
 
 smart=Smart()
 

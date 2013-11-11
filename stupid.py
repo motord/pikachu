@@ -63,7 +63,6 @@ class Stupid(Pikachu):
         content=data['content']
 
         session = self.Session()
-        # session.execute('SET search_path TO {0}'.format(DATABASE['username']))
 
         message = Message(recipients=recipients, headcount=headcount, content=content, delivered_at=datetime.now())
 
